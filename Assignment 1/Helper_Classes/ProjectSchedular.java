@@ -1,19 +1,20 @@
 package Helper_Classes;
 
+import java.lang.reflect.Array;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ProjectSchedular {
-    private ArrayList<TaskManager> tasks;
+    private HashMap<Integer,TaskManager> tasks;
     private Map<String, TaskManager> taskMap;
 
-    public ProjectSchedular(ArrayList<TaskManager> tasks) {
+    public ProjectSchedular(HashMap<Integer, TaskManager> tasks) {
         this.tasks = tasks;
         this.taskMap = new HashMap<>();
 
         // Create a map for easy task lookup
-        for (TaskManager task : tasks) {
+        for (TaskManager task : tasks.values()) {
             taskMap.put(task.getName(), task);
         }
     }
@@ -44,7 +45,7 @@ public class ProjectSchedular {
         }
 
         // Calculate each task's duration first
-        for (TaskManager task : tasks) {
+        for (TaskManager task : tasks.values()) {
             task.CalculateTimeSpan();
         }
 
@@ -74,7 +75,7 @@ public class ProjectSchedular {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
 
-        for (TaskManager task : tasks) {
+        for (TaskManager task : tasks.values()) {
 
             LocalDate date = LocalDate.parse(task.getStartingDate());
             LocalTime time = LocalTime.parse(task.getStartingTime());
@@ -93,7 +94,7 @@ public class ProjectSchedular {
         // Process tasks in dependency order
         Set<String> processed = new HashSet<>();
 
-        for (TaskManager task : tasks) {
+        for (TaskManager task : tasks.values()) {
             calculateTaskCompletionTimeRecursive(task, completionTimes, processed);
         }
 
@@ -172,11 +173,31 @@ public class ProjectSchedular {
         return criticalPath;
     }
 
-    public void overlapingTasks(ArrayList<TaskManager> taskManagers) {
-        for(TaskManager taskManager : taskManagers) {
-            for(int i = 0; i < taskManager.getDependencies().size(); i++) {
+    public void overlapingTasks(HashMap<Integer,TaskManager> taskManagers) {
+        for(TaskManager Task : taskManagers.values()) {
+            ArrayList<String> dependencies = Task.getDependencies();
+            for(String dependency : dependencies) {
+                TaskManager indTask = null;
+                for(TaskManager task : taskManagers.values()) {
+                    if(task.getId() == Integer.parseInt(dependency)) {
+                        indTask = task;
+                        break;
+                    }
+                }
 
+                if(indTask != null) {
+                    LocalDate taskStart = LocalDate.parse(Task.getStartingDate());
+                    LocalDate taskEnd   = LocalDate.parse(Task.getEndingDate());
+
+                    LocalDate depStart  = LocalDate.parse(indTask.getStartingDate());
+                    LocalDate depEnd    = LocalDate.parse(indTask.getEndingDate());
+
+                    if(!(taskEnd.isBefore(depStart) || taskStart.isAfter(depEnd))) {
+                        System.out.println("Task: " + Task.getId());
+                    }
+                }
             }
+
         }
     }
 
