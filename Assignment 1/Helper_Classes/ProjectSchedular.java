@@ -19,6 +19,27 @@ public class ProjectSchedular {
         }
     }
 
+    public void TotalDurationOfEachResource(HashMap<String, ResourceManager> resources, HashMap<Integer, TaskManager> tasks) {
+        for(ResourceManager resource : resources.values()) {
+            double totalDuration = 0;
+
+            for(Map.Entry<Integer, Integer> entry : resource.getResource().entrySet()) {
+                TaskManager task = tasks.get(entry.getKey());
+                Integer allocationPercentage = entry.getValue();
+
+                if(task != null) {
+                    double taskDurationHours = task.timeSpan.days * 24.0 +
+                            task.timeSpan.Hours +
+                            (task.timeSpan.Min / 60.0);
+                    double resourceEffort = (allocationPercentage / 100.0) * taskDurationHours;
+                    totalDuration += resourceEffort;
+                }
+            }
+
+            System.out.println(resource.name + ": " + String.format("%.2f", totalDuration) + " hours");
+        }
+    }
+
     public class ProjectCompletion {
         LocalDateTime projectStartTime;
         LocalDateTime projectEndTime;
@@ -44,27 +65,21 @@ public class ProjectSchedular {
             return null;
         }
 
-        // Calculate each task's duration first
         for (TaskManager task : tasks.values()) {
             task.CalculateTimeSpan();
         }
 
-        // Find project start time (earliest task start)
         LocalDateTime projectStart = findEarliestStartTime();
 
-        // Calculate task completion times considering dependencies
         Map<String, LocalDateTime> taskCompletionTimes = calculateTaskCompletionTimes();
 
-        // Find project end time (latest task completion)
         LocalDateTime projectEnd = findLatestCompletionTime(taskCompletionTimes);
 
-        // Calculate total project duration
         Duration projectDuration = Duration.between(projectStart, projectEnd);
         long days = projectDuration.toDays();
         long hours = projectDuration.toHours() % 24;
         long minutes = projectDuration.toMinutes() % 60;
 
-        // Find critical path
         ArrayList<String> criticalPath = findCriticalPath(taskCompletionTimes, projectEnd);
 
         return new ProjectCompletion(projectStart, projectEnd, days, hours, minutes, criticalPath);
@@ -91,7 +106,6 @@ public class ProjectSchedular {
     private Map<String, LocalDateTime> calculateTaskCompletionTimes() {
         Map<String, LocalDateTime> completionTimes = new HashMap<>();
 
-        // Process tasks in dependency order
         Set<String> processed = new HashSet<>();
 
         for (TaskManager task : tasks.values()) {
@@ -108,10 +122,9 @@ public class ProjectSchedular {
             return completionTimes.get(task.getName());
         }
 
-        // Calculate when this task can start (after all dependencies complete)
         LocalDateTime taskCanStart = null;
 
-        // Check dependencies
+
         if (task.getDependencies() != null && !task.getDependencies().isEmpty()) {
             for (String dependency : task.getDependencies()) {
                 TaskManager depTask = taskMap.get(dependency.trim());
@@ -126,7 +139,6 @@ public class ProjectSchedular {
             }
         }
 
-        // If no dependencies or earliest dependency completion, use task's scheduled start
         if (taskCanStart == null) {
 
             LocalDate startDate = LocalDate.parse(task.getStartingDate());
@@ -134,7 +146,6 @@ public class ProjectSchedular {
             taskCanStart = LocalDateTime.of(startDate, startTime);
         }
 
-        // Calculate task completion time
         Duration taskDuration = Duration.ofDays(task.getDays())
                 .plusHours(task.getHours())
                 .plusMinutes(task.getMin());
@@ -163,7 +174,6 @@ public class ProjectSchedular {
                                                LocalDateTime projectEnd) {
         ArrayList<String> criticalPath = new ArrayList<>();
 
-        // Find tasks that complete at project end time (critical tasks)
         for (Map.Entry<String, LocalDateTime> entry : taskCompletionTimes.entrySet()) {
             if (entry.getValue().equals(projectEnd)) {
                 criticalPath.add(entry.getKey());

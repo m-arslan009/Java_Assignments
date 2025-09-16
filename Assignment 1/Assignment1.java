@@ -50,40 +50,43 @@ public class Assignment1 {
             }
         }
 
+
+
+        HashMap<String, ResourceManager> resourceManagers = new HashMap<>();
+
+        try {
+            FileReader ResourcesObj = new FileReader("Resources/Resources.txt");
+            BufferedReader buffObj = new BufferedReader(ResourcesObj);
+            String line;
+            String delimiter = "[,]";
+            while((line =  buffObj.readLine()) != null) {
+                String[] data = line.split(delimiter);
+                ResourceManager obj = new  ResourceManager();
+                String name = "";
+
+                for(int i = 0; i < data.length; i++) {
+                    if(i == 0) {
+                        name = data[i];
+                        obj.setName(name);
+                    } else {
+                        obj.setSourceData(data[i]);
+                    }
+                }
+                resourceManagers.put(name, obj);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            for(ResourceManager r : resourceManagers.values()) {
+                r.PrintResources();
+            }
+        }
+
         ProjectSchedular schedular = new ProjectSchedular(taskManagers);
         ProjectSchedular.ProjectCompletion completion = schedular.calculateProjectCompletion();
         schedular.printProjectCompletion(completion);
 
-
-//        ArrayList<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
-//        HashMap<String, ResourceManager> resourceManagers = new HashMap<>();
-//
-//        try {
-//            FileReader ResourcesObj = new FileReader("Resources/Resources.txt");
-//            BufferedReader buffObj = new BufferedReader(ResourcesObj);
-//            String line;
-//            String delimiter = "[,]";
-//            while((line =  buffObj.readLine()) != null) {
-//                String[] data = line.split(delimiter);
-//                ResourceManager obj = new  ResourceManager();
-//                String name = ""
-//
-//                for(int i = 0; i < data.length; i++) {
-//                    if(i == 0) {
-//                        name = data[i];
-//                        obj.setName(name);
-//                    } else {
-//                        obj.setSourceData(data[i]);
-//                    }
-//                }
-//                resourceManagers.put(name, obj);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            for(ResourceManager r : resourceManagers.values()) {
-//                r.PrintResources();
-//            }
-//        }
+        schedular.TotalDurationOfEachResource(resourceManagers, taskManagers);
+        schedular.overlapingTasks(taskManagers);
     }
 }
