@@ -43,12 +43,13 @@ public class Assignment1 {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-
-            for(TaskManager tm : taskManagers.values()) {
-                tm.PrintTaskManager();
-            }
         }
+//        finally {
+//
+//            for(TaskManager tm : taskManagers.values()) {
+//                tm.PrintTaskManager();
+//            }
+//        }
 
 
 
@@ -76,17 +77,30 @@ public class Assignment1 {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            for(ResourceManager r : resourceManagers.values()) {
-                r.PrintResources();
-            }
         }
+//        finally {
+//            for(ResourceManager r : resourceManagers.values()) {
+//                r.PrintResources();
+//            }
+//        }
 
         ProjectSchedular schedular = new ProjectSchedular(taskManagers);
         ProjectSchedular.ProjectCompletion completion = schedular.calculateProjectCompletion();
         schedular.printProjectCompletion(completion);
 
+        System.out.println("Total duration");
+        System.out.println();
         schedular.TotalDurationOfEachResource(resourceManagers, taskManagers);
+
+        System.out.println();
+        System.out.println("Overlapping Tasks");
+        System.out.println();
         schedular.overlapingTasks(taskManagers);
+
+        System.out.println();
+        System.out.println("Common resources that makes team");
+        System.out.println();
+
+        schedular.compareResources(resourceManagers);
     }
 }

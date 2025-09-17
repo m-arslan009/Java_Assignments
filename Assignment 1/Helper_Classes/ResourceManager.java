@@ -2,11 +2,10 @@ package Helper_Classes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class ResourceManager {
     String name;
-//    ArrayList<String> resource;
-//    ArrayList<String> allocation;
     HashMap<Integer, Integer> resources;
 
     public ResourceManager() {
@@ -20,7 +19,9 @@ public class ResourceManager {
 
     public void setSourceData(String obj) {
         String[] data = obj.split(":");
-        resources.put(Integer.parseInt(data[0]), Integer.parseInt(data[1]));
+        int Id = Integer.parseInt(data[0].trim());
+        int Contribution = Integer.parseInt(data[1].trim());
+        resources.put(Id, Contribution);
     }
 
     public HashMap<Integer, Integer> getResource() {

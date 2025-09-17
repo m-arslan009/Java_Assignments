@@ -1,6 +1,4 @@
 package Helper_Classes;
-
-import java.lang.reflect.Array;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -13,7 +11,6 @@ public class ProjectSchedular {
         this.tasks = tasks;
         this.taskMap = new HashMap<>();
 
-        // Create a map for easy task lookup
         for (TaskManager task : tasks.values()) {
             taskMap.put(task.getName(), task);
         }
@@ -184,12 +181,15 @@ public class ProjectSchedular {
     }
 
     public void overlapingTasks(HashMap<Integer,TaskManager> taskManagers) {
+        int totalTaskOverlap = 0;
+        System.out.println("==================================================\n");
+        System.out.println("Below are the Id's of overlapped tasks");
         for(TaskManager Task : taskManagers.values()) {
             ArrayList<String> dependencies = Task.getDependencies();
             for(String dependency : dependencies) {
                 TaskManager indTask = null;
                 for(TaskManager task : taskManagers.values()) {
-                    if(task.getId() == Integer.parseInt(dependency)) {
+                    if(task.getId() == Integer.parseInt(dependency.trim())) {
                         indTask = task;
                         break;
                     }
@@ -204,12 +204,41 @@ public class ProjectSchedular {
 
                     if(!(taskEnd.isBefore(depStart) || taskStart.isAfter(depEnd))) {
                         System.out.println("Task: " + Task.getId());
+                        totalTaskOverlap++;
                     }
                 }
             }
-
         }
+        System.out.println("Total overlapped tasks: " + totalTaskOverlap);
+        System.out.println("\n==================================================\n");
     }
+
+    public void compareResources(HashMap<String, ResourceManager> resources) {
+        // Convert values into a List
+        ArrayList<ResourceManager> resourceList = new ArrayList<>(resources.values());
+        ArrayList<Integer> idList = new ArrayList<>();
+
+        for (int i = 0; i < resourceList.size() - 1; i++) {
+            ResourceManager curr = resourceList.get(i);
+
+            for(int j = i + 1; j <  resourceList.size(); j++) {
+                for(Integer id: curr.getResource().keySet()) {
+                    ResourceManager next = resourceList.get(j);
+                    if(next.getResource().containsKey(id) && !idList.contains(id)) {
+                        idList.add(id);
+                    }
+                }
+            }
+        }
+
+        System.out.println("Below ID's of Resoures that makes team");
+        System.out.println();
+        for(int id: idList) {
+            System.out.println(id + " ");
+        }
+        System.out.println();
+    }
+
 
     public void printProjectCompletion(ProjectCompletion completion) {
         if (completion == null) {
@@ -224,11 +253,6 @@ public class ProjectSchedular {
                 completion.totalDays + " Days, " +
                 completion.totalHours + " Hours, " +
                 completion.totalMinutes + " Minutes");
-
-        System.out.println("\nCritical Path Tasks:");
-        for (String taskName : completion.criticalPath) {
-            System.out.println("- " + taskName);
-        }
         System.out.println("==================================================\n");
     }
 }

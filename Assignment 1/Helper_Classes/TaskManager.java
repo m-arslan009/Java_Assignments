@@ -75,7 +75,7 @@ public class TaskManager {
         if (val.length() < 8) {
             return val;
         }
-        String Year = val.substring(0, 4);   // fixed
+        String Year = val.substring(0, 4);
         String Month = val.substring(4, 6);
         String Day = val.substring(6, 8);
 
