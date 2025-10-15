@@ -17,6 +17,7 @@ public class Table extends JScrollPane {
         };
         table = new JTable(model);
         setViewportView(table);
+        table.setVisible(true);
     }
 
     public void insertRow(String[] row) {

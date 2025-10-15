@@ -1,0 +1,36 @@
+--- TEST CASE 1 --- Run this one before coming to me.
+# Tasks file
+1, Initial research and analysis, 20250915+0800, 20251010+1800,
+2, Develop program content and materials, 20251013+0800, 20251031+1159, 1
+3, Infrastructure planning, 20251013+0800, 20251017+1800, 1
+4, Infrastructure setup and review, 20251017+0800, 20251031+1800, 3
+5, Program rollout, 20251103+0900, 20251215+1700, 2, 4
+
+# Resources file
+Ahmed, 1:50, 3:100, 4:100, 5:50
+Ayesha, 1:50, 2:50,
+Mariyam, 1:100, 2:100, 5:100
+
+--- TEST CASE 2 ---
+# Tasks file
+1, Task A, 20250915+0800, 20250920+1700, 2
+2, Task B, 20250921+0900, 20250925+1700, 1
+
+# Resources file
+Ahmed, 1:100, 2:100
+
+--- TEST CASE 3 ---
+# Tasks file
+1, Task A, 20250915-0800, 20250920+1700,
+2, Task B, 20250921+0900, 20250925+1700, 1
+
+# Resources file
+Ayesha, 1:100, 2:100
+
+--- TEST CASE 4 ---
+# Tasks file
+1, Task A, 20250915+0800, 20250920+1700,
+2, Task B, 20250921+0900, 20250925+1700, 1
+
+# Resources file
+# (No allocations provided)
