@@ -23,13 +23,21 @@ public class OverlappingTask extends JPanel {
     }
 
     public void addTaskToTable(int[] tasks) {
+        if(tasks == null || tasks.length == 0) {
+            String[] row = {"N/A", "No overlapping tasks found"};
+            overlappingTaskTable.insertRow(row);
+            return;
+        }
+
         int ind = 1;
         for(int val: tasks) {
-            String[] row = new String[2];
-            row[0] = Integer.toString(ind);
-            row[1] = Integer.toString(val);
-            overlappingTaskTable.insertRow(row);
-            ind++; // Don't forget to increment!
+            if(val > 0) {  // ← Only add valid task IDs
+                String[] row = new String[2];
+                row[0] = Integer.toString(ind);
+                row[1] = Integer.toString(val);
+                overlappingTaskTable.insertRow(row);
+                ind++;
+            }
         }
     }
 }

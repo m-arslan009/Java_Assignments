@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ActionButtons extends JPanel {
-    JButton Upload_Task;
-    JButton Upload_Resource;
-    JButton Analyze;
-    JButton Visualize;
+    Button Upload_Task;
+    Button Upload_Resource;
+    Button Analyze;
+    Button Visualize;
 
     public ActionButtons() {
         Upload_Task = new Button("Upload Task");
